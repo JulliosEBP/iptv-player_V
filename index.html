@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPTV Player</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  
+  <!-- NUEVO: PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0078d7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="res/icon-192.png">
+</head>
+<body>
+  <div id="app">
+    <div id="sidebar">
+      <h2>IPTV Player</h2>
+
+      <div id="sourceTabs">
+        <button class="source-tab active" data-source="m3u">M3U</button>
+        <button class="source-tab" data-source="xtream">Xtream</button>
+      </div>
+
+      <div id="m3uSource" class="source-content active">
+        <input type="text" id="urlInput" placeholder="URL de lista M3U">
+        <input type="text" id="epgInput" placeholder="URL de EPG (XMLTV)">
+        <button id="loadBtn">Cargar Lista</button>
+      </div>
+
+      <div id="xtreamSource" class="source-content">
+        <input type="text" id="xtreamHost" placeholder="Host (http://servidor.com:8080)">
+        <input type="text" id="xtreamUser" placeholder="Usuario">
+        <input type="password" id="xtreamPass" placeholder="Contraseña">
+        <button id="xtreamLoginBtn">Conectar</button>
+        <div id="xtreamStatus"></div>
+      </div>
+
+      <input type="text" id="searchInput" placeholder="Buscar canal...">
+      <select id="groupFilter">
+        <option value="all">Todos los grupos</option>
+      </select>
+
+      <div id="tabs">
+        <button class="tab active" data-tab="channels">Canales</button>
+        <button class="tab" data-tab="history">Historial</button>
+        <button class="tab" data-tab="settings">Ajustes</button>
+      </div>
+
+      <div id="channelsTab" class="tab-content active">
+        <ul id="channelList"></ul>
+      </div>
+
+      <div id="historyTab" class="tab-content">
+        <ul id="historyList"></ul>
+      </div>
+
+      <div id="settingsTab" class="tab-content">
+        <h3>Subtítulos</h3>
+        <label>Fuente:</label>
+        <select id="subFont">
+          <option value="Arial">Arial</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Courier New">Courier New</option>
+          <option value="Georgia">Georgia</option>
+        </select>
+
+        <label>Tamaño: <span id="subSizeValue">24</span>px</label>
+        <input type="range" id="subSize" min="16" max="48" value="24">
+
+        <label>Color:</label>
+        <input type="color" id="subColor" value="#ffffff">
+
+        <label>Color de fondo:</label>
+        <input type="color" id="subBgColor" value="#000000">
+
+        <button id="saveSettings">Guardar Ajustes</button>
+      </div>
+    </div>
+
+    <div id="playerArea">
+      <div id="videoContainer">
+        <video id="videoPlayer"></video>
+        <div id="subtitleOverlay"></div>
+        <div id="skipIntroBtn" class="hidden">Saltar Intro</div>
+      </div>
+
+      <div id="controls">
+        <div id="nowPlaying"></div>
+        <div id="progressBar">
+          <div id="progress"></div>
+        </div>
+        <div id="timeDisplay">
+          <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
+        </div>
+        <div id="epgInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/cors-proxy.js"></script>
+  <script src="js/m3u-parser.js"></script>
+  <script src="js/epg-parser.js"></script>
+  <script src="js/history-manager.js"></script>
+  <script src="js/subtitle-manager.js"></script>
+  <script src="js/skip-marker.js"></script>
+  <script src="js/xtream-api.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/main.js"></script>
+  
+  <!-- NUEVO: Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+          .then(function(reg) { console.log('SW registrado'); })
+          .catch(function(err) { console.log('SW error:', err); });
+      });
+    }
+  </script>
+</body>
+</html>
